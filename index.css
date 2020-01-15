@@ -1,0 +1,21 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100vh;
+    background: rgb(207, 252, 253);
+}
+#divG {
+    width: auto;
+    height: auto;
+    background-color: #ccc;
+}
+
+#tableG {
+    font-size: 13px;
+}
