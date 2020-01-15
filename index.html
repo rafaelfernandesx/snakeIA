@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,14 +8,20 @@
     <link rel="stylesheet" href="index.css">
     <title>IA</title>
 </head>
+
 <body>
+    <!-- <button onclick="stG()">Iniciar</button> -->
     <div id="divG">
 
     </div>
 </body>
 <script>
     createTableG();
-    function createTableG(qtdQuadro = 40) {
+    stG();
+
+    direcao = 'r';
+
+    function createTableG(qtdQuadro = 10) {
         let divG = document.getElementById('divG');
 
         let table = document.createElement('table');
@@ -28,7 +35,7 @@
                 let td = document.createElement('td');
                 // td.style.background = 'rgb('+ Math.floor(Math.random() * 255) +', '+ Math.floor(Math.random() * 255) +', '+ Math.floor(Math.random() * 255) +')';
                 td.style.padding = '5px';
-                td.setAttribute('id', i+'.'+j);
+                td.setAttribute('id', i + '.' + j);
                 tr.appendChild(td);
             }
             table.appendChild(tr);
@@ -36,29 +43,72 @@
         divG.appendChild(table);
     }
 
-    function stG(){
-        let tdP = document.getElementById('0.0');
+    function stG() {
+        tdP = document.getElementById('0.0');
         tdP.style.background = 'blue';
         tdP.setAttribute('class', 'p');
 
-        window.addEventListener("keypress", function(e) {
-            console.log(e);
-            switch (e.keyCode) {
-                case 37:
-                    alert('left');
-                    break;
-                case 38:
-                    alert('up');
-                    break;
-                case 39:
-                    alert('right');
-                    break;
-                case 40:
-                    alert('down');
-                    break;
-            }
-        }, false);
+        window.addEventListener("keydown", mv, false);
     }
 
+    function mv(e) {
+        let pl = document.querySelector('.p');
+        let pos = pl.getAttribute('id');
+        let arrPos = pos.split('.');
+        let id = '';
+
+        switch (e.keyCode) {
+            case 37:
+                //left
+                id = arrPos[0] + '.' + (parseInt(arrPos[1]) - 1);
+                id = document.getElementById(id);
+                rmP();
+                id.setAttribute('class', 'p');
+                id.style.background = 'blue';
+                break;
+            case 38:
+                //up
+                id = (parseInt(arrPos[0]) - 1) + '.' + arrPos[1];
+                id = document.getElementById(id);
+                rmP();
+                id.setAttribute('class', 'p');
+                id.style.background = 'blue';
+                break;
+            case 39:
+                //right
+                id = arrPos[0] + '.' + (parseInt(arrPos[1]) + 1);
+                id = document.getElementById(id);
+                rmP();
+                id.setAttribute('class', 'p');
+                id.style.background = 'blue';
+                break;
+            case 40:
+                //down
+                id = (parseInt(arrPos[0]) + 1) + '.' + arrPos[1];
+                console.log(id);
+                id = document.getElementById(id);
+                rmP();
+                id.setAttribute('class', 'p');
+                id.style.background = 'blue';
+                break;
+        }
+    }
+
+    function rmP() {
+        let campos = document.querySelectorAll('td');
+        for (let i = 0; i < campos.length; ++i) {
+            campos[i].style.background = 'transparent';
+            campos[i].removeAttribute('class');
+        }
+    }
+
+    // function core(){
+    //     setInterval(() => {
+
+
+    //     }, 1000);
+    // }
+
 </script>
+
 </html>
