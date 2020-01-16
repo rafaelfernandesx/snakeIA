@@ -10,14 +10,13 @@
 </head>
 
 <body>
-    <!-- <button onclick="stG()">Iniciar</button> -->
+    <button onclick="core()">Jogar</button>
     <div id="divG">
 
     </div>
 </body>
 <script>
     createTableG();
-    stG();
 
     direcao = 'r';
 
@@ -60,36 +59,19 @@
         switch (e.keyCode) {
             case 37:
                 //left
-                id = arrPos[0] + '.' + (parseInt(arrPos[1]) - 1);
-                id = document.getElementById(id);
-                rmP();
-                id.setAttribute('class', 'p');
-                id.style.background = 'blue';
+                direcao = 'l'
                 break;
             case 38:
                 //up
-                id = (parseInt(arrPos[0]) - 1) + '.' + arrPos[1];
-                id = document.getElementById(id);
-                rmP();
-                id.setAttribute('class', 'p');
-                id.style.background = 'blue';
+                direcao = 'u';
                 break;
             case 39:
                 //right
-                id = arrPos[0] + '.' + (parseInt(arrPos[1]) + 1);
-                id = document.getElementById(id);
-                rmP();
-                id.setAttribute('class', 'p');
-                id.style.background = 'blue';
+                direcao = 'r';
                 break;
             case 40:
                 //down
-                id = (parseInt(arrPos[0]) + 1) + '.' + arrPos[1];
-                console.log(id);
-                id = document.getElementById(id);
-                rmP();
-                id.setAttribute('class', 'p');
-                id.style.background = 'blue';
+                direcao = 'd';
                 break;
         }
     }
@@ -101,13 +83,71 @@
             campos[i].removeAttribute('class');
         }
     }
+    function endgame(pl){
+        if (pl == null) {
+            clearInterval(loopcore);
+            alert('voce perdeu');
+            return false;
+        }else{
+            return true;
+        }
+    }
 
-    // function core(){
-    //     setInterval(() => {
+    function core(){
+        rmP();
+        stG();
+        direcao = 'r';
+        loopcore = setInterval(() => {
+            let pl = document.querySelector('.p');
+            let pos = pl.getAttribute('id');
+            let arrPos = pos.split('.');
+            let id = '';
 
+            switch (direcao) {
+                case 'l':
+                    //left
+                    id = arrPos[0] + '.' + (parseInt(arrPos[1]) - 1);
+                    id = document.getElementById(id);
+                    if (endgame(id) == true){
+                        rmP();
+                        id.setAttribute('class', 'p');
+                        id.style.background = 'blue';
+                    }
+                    break;
+                case 'u':
+                    //up
+                    id = (parseInt(arrPos[0]) - 1) + '.' + arrPos[1];
+                    id = document.getElementById(id);
+                    if (endgame(id) == true) {
+                        rmP();
+                        id.setAttribute('class', 'p');
+                        id.style.background = 'blue';
+                    }
+                    break;
+                case 'r':
+                    //right
+                    id = arrPos[0] + '.' + (parseInt(arrPos[1]) + 1);
+                    id = document.getElementById(id);
+                    if (endgame(id) == true) {
+                        rmP();
+                        id.setAttribute('class', 'p');
+                        id.style.background = 'blue';
+                    }
+                    break;
+                case 'd':
+                    //down
+                    id = (parseInt(arrPos[0]) + 1) + '.' + arrPos[1];
+                    id = document.getElementById(id);
+                    if (endgame(id) == true) {
+                        rmP();
+                        id.setAttribute('class', 'p');
+                        id.style.background = 'blue';
+                    }
+                    break;
+            }
 
-    //     }, 1000);
-    // }
+        }, 1000);
+    }
 
 </script>
 
