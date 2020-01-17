@@ -10,21 +10,24 @@
     <title>IA</title>
 </head>
 
-<body>
+<body class="bg-dark">
     <div class="container-fluid">
-        <div class="row bg-primary">
-            <div class="col-sm-2">
+        <div class="row bg-secondary">
+            <!-- <div class="col-sm-2">
                 <span>Nome</span><br>
                 <input type="text" class="form-control form-control-sm" id="nome">
-            </div>
-            <div class="col-sm-1 bg-success">
+            </div> -->
+            <div class="col-sm-1">
                 <button onclick="core()" class="btn btn-dark w-100 mt-3">Jogar</button>
             </div>
         </div>
-    </div>
-    <div id="divGame">
+        <div class="row">
+            <div class="col-sm" id="divGame">
 
+            </div>
+        </div>
     </div>
+
 </body>
 <script>
     createtableGame();
@@ -88,7 +91,7 @@
     function removeSnake() {
         let campos = document.querySelectorAll('td');
         for (let i = 0; i < campos.length; ++i) {
-            campos[i].style.background = 'white';
+            campos[i].style.background = '#343a40';
             campos[i].removeAttribute('class');
         }
     }
