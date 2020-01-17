@@ -6,85 +6,94 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
     <title>IA</title>
 </head>
 
 <body>
-    <button onclick="core()">Jogar</button>
-    <div id="divG">
+    <div class="container-fluid">
+        <div class="row bg-primary">
+            <div class="col-sm-2">
+                <span>Nome</span><br>
+                <input type="text" class="form-control form-control-sm" id="nome">
+            </div>
+            <div class="col-sm-1 bg-success">
+                <button onclick="core()" class="btn btn-dark w-100 mt-3">Jogar</button>
+            </div>
+        </div>
+    </div>
+    <div id="divGame">
 
     </div>
 </body>
 <script>
-    createTableG();
+    createtableGame();
 
-    direcao = 'r';
+    direction = 'r';
+    arraySnake = [0.0];
 
-    function createTableG(qtdQuadro = 10) {
-        let divG = document.getElementById('divG');
+    function createtableGame(qtdQuadro = 20) {
+        let divGame = document.getElementById('divGame');
 
         let table = document.createElement('table');
         // table.setAttribute('cellpadding', '5px');
-        table.setAttribute('id', 'tableG');
+        table.setAttribute('id', 'tableGame');
         table.setAttribute('cellspacing', '0px');
+        table.setAttribute('border', '1px');
 
-        for (let i = 0; i < qtdQuadro; i++) {
+        for (let y = 0; y < qtdQuadro; y++) {
             let tr = document.createElement('tr');
-            for (let j = 0; j < qtdQuadro; j++) {
+            for (let x = 0; x < qtdQuadro; x++) {
                 let td = document.createElement('td');
                 // td.style.background = 'rgb('+ Math.floor(Math.random() * 255) +', '+ Math.floor(Math.random() * 255) +', '+ Math.floor(Math.random() * 255) +')';
-                td.style.padding = '5px';
-                td.setAttribute('id', i + '.' + j);
+                td.style.padding = '7px';
+                td.setAttribute('px', x);
+                td.setAttribute('py', y);
                 tr.appendChild(td);
             }
             table.appendChild(tr);
         }
-        divG.appendChild(table);
+        divGame.appendChild(table);
     }
 
-    function stG() {
-        tdP = document.getElementById('0.0');
+    function startGame() {
+        tdP = document.querySelector('[px="0"][py="0"]');
         tdP.style.background = 'blue';
-        tdP.setAttribute('class', 'p');
+        tdP.setAttribute('class', 'snake');
 
-        window.addEventListener("keydown", mv, false);
+        window.addEventListener("keydown", directionSnake, false);
     }
 
-    function mv(e) {
-        let pl = document.querySelector('.p');
-        let pos = pl.getAttribute('id');
-        let arrPos = pos.split('.');
-        let id = '';
-
+    function directionSnake(e) {
         switch (e.keyCode) {
             case 37:
                 //left
-                direcao = 'l'
+                direction = 'l'
                 break;
             case 38:
                 //up
-                direcao = 'u';
+                direction = 'u';
                 break;
             case 39:
                 //right
-                direcao = 'r';
+                direction = 'r';
                 break;
             case 40:
                 //down
-                direcao = 'd';
+                direction = 'd';
                 break;
         }
     }
 
-    function rmP() {
+    function removeSnake() {
         let campos = document.querySelectorAll('td');
         for (let i = 0; i < campos.length; ++i) {
-            campos[i].style.background = 'transparent';
+            campos[i].style.background = 'white';
             campos[i].removeAttribute('class');
         }
     }
-    function endgame(pl){
-        if (pl == null) {
+    function endgame(snake){
+        if (snake == null) {
             clearInterval(loopcore);
             alert('voce perdeu');
             return false;
@@ -94,54 +103,45 @@
     }
 
     function core(){
-        rmP();
-        stG();
-        direcao = 'r';
+        removeSnake();
+        startGame();
+        direction = 'r';
         loopcore = setInterval(() => {
-            let pl = document.querySelector('.p');
-            let pos = pl.getAttribute('id');
-            let arrPos = pos.split('.');
-            let id = '';
+            let snake = document.querySelector('.snake');
+            let pX = parseFloat(snake.getAttribute('px'));
+            let pY = parseFloat(snake.getAttribute('py'));
 
-            switch (direcao) {
+            switch (direction) {
                 case 'l':
-                    //left
-                    id = arrPos[0] + '.' + (parseInt(arrPos[1]) - 1);
-                    id = document.getElementById(id);
-                    if (endgame(id) == true){
-                        rmP();
-                        id.setAttribute('class', 'p');
-                        id.style.background = 'blue';
+                    newPos = document.querySelector('[px="'+(pX-1)+'"][py="'+pY+'"]');
+                    if (endgame(newPos) == true){
+                        removeSnake();
+                        newPos.setAttribute('class', 'snake');
+                        newPos.style.background = 'blue';
                     }
                     break;
                 case 'u':
-                    //up
-                    id = (parseInt(arrPos[0]) - 1) + '.' + arrPos[1];
-                    id = document.getElementById(id);
-                    if (endgame(id) == true) {
-                        rmP();
-                        id.setAttribute('class', 'p');
-                        id.style.background = 'blue';
+                    newPos = document.querySelector('[px="' + pX + '"][py="' + (pY - 1) + '"]');
+                    if (endgame(newPos) == true) {
+                        removeSnake();
+                        newPos.setAttribute('class', 'snake');
+                        newPos.style.background = 'blue';
                     }
                     break;
                 case 'r':
-                    //right
-                    id = arrPos[0] + '.' + (parseInt(arrPos[1]) + 1);
-                    id = document.getElementById(id);
-                    if (endgame(id) == true) {
-                        rmP();
-                        id.setAttribute('class', 'p');
-                        id.style.background = 'blue';
+                    newPos = document.querySelector('[px="' + (pX + 1) + '"][py="' + pY + '"]');
+                    if (endgame(newPos) == true) {
+                        removeSnake();
+                        newPos.setAttribute('class', 'snake');
+                        newPos.style.background = 'blue';
                     }
                     break;
                 case 'd':
-                    //down
-                    id = (parseInt(arrPos[0]) + 1) + '.' + arrPos[1];
-                    id = document.getElementById(id);
-                    if (endgame(id) == true) {
-                        rmP();
-                        id.setAttribute('class', 'p');
-                        id.style.background = 'blue';
+                    newPos = document.querySelector('[px="' + pX + '"][py="' + (pY + 1) + '"]');
+                    if (endgame(newPos) == true) {
+                        removeSnake();
+                        newPos.setAttribute('class', 'snake');
+                        newPos.style.background = 'blue';
                     }
                     break;
             }
