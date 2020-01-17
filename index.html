@@ -13,12 +13,8 @@
 <body class="bg-dark">
     <div class="container-fluid">
         <div class="row bg-secondary">
-            <!-- <div class="col-sm-2">
-                <span>Nome</span><br>
-                <input type="text" class="form-control form-control-sm" id="nome">
-            </div> -->
             <div class="col-sm-1">
-                <button onclick="core()" class="btn btn-dark w-100 mt-3">Jogar</button>
+                <button onclick="core()" class="btn btn-dark w-100">Jogar</button>
             </div>
         </div>
         <div class="row">
@@ -34,6 +30,7 @@
 
     direction = 'r';
     arraySnake = [0.0];
+    qtdQuadro = 20;
 
     function createtableGame(qtdQuadro = 20) {
         let divGame = document.getElementById('divGame');
@@ -52,6 +49,7 @@
                 td.style.padding = '7px';
                 td.setAttribute('px', x);
                 td.setAttribute('py', y);
+                td.setAttribute('tipo', 'floor');
                 tr.appendChild(td);
             }
             table.appendChild(tr);
@@ -62,7 +60,8 @@
     function startGame() {
         tdP = document.querySelector('[px="0"][py="0"]');
         tdP.style.background = 'blue';
-        tdP.setAttribute('class', 'snake');
+        tdP.setAttribute('tipo', 'snake');
+        randomFood();
 
         window.addEventListener("keydown", directionSnake, false);
     }
@@ -88,11 +87,21 @@
         }
     }
 
+    function randomFood(){
+        let pBug = [Math.floor(Math.random() * qtdQuadro), Math.floor(Math.random() * qtdQuadro)];
+
+        let bug = document.querySelector('[px="'+ pBug[0] +'"][py="'+ pBug[1] +'"]');
+        bug.style.background = 'red';
+        bug.setAttribute('tipo', 'food');
+    }
+
     function removeSnake() {
         let campos = document.querySelectorAll('td');
         for (let i = 0; i < campos.length; ++i) {
-            campos[i].style.background = '#343a40';
-            campos[i].removeAttribute('class');
+            if (campos[i].getAttribute('tipo') != 'food') {
+                campos[i].style.background = '#343a40';
+                campos[i].setAttribute('tipo','floor');
+            }
         }
     }
     function endgame(snake){
@@ -110,7 +119,7 @@
         startGame();
         direction = 'r';
         loopcore = setInterval(() => {
-            let snake = document.querySelector('.snake');
+            let snake = document.querySelector('[tipo="snake"]');
             let pX = parseFloat(snake.getAttribute('px'));
             let pY = parseFloat(snake.getAttribute('py'));
 
@@ -118,38 +127,50 @@
                 case 'l':
                     newPos = document.querySelector('[px="'+(pX-1)+'"][py="'+pY+'"]');
                     if (endgame(newPos) == true){
+                        if (newPos.getAttribute("tipo") == 'food') {
+                            randomFood();
+                        }
                         removeSnake();
-                        newPos.setAttribute('class', 'snake');
+                        newPos.setAttribute('tipo', 'snake');
                         newPos.style.background = 'blue';
                     }
                     break;
                 case 'u':
                     newPos = document.querySelector('[px="' + pX + '"][py="' + (pY - 1) + '"]');
                     if (endgame(newPos) == true) {
+                        if (newPos.getAttribute("tipo") == 'food') {
+                            randomFood();
+                        }
                         removeSnake();
-                        newPos.setAttribute('class', 'snake');
+                        newPos.setAttribute('tipo', 'snake');
                         newPos.style.background = 'blue';
                     }
                     break;
                 case 'r':
                     newPos = document.querySelector('[px="' + (pX + 1) + '"][py="' + pY + '"]');
                     if (endgame(newPos) == true) {
+                        if (newPos.getAttribute("tipo") == 'food') {
+                            randomFood();
+                        }
                         removeSnake();
-                        newPos.setAttribute('class', 'snake');
+                        newPos.setAttribute('tipo', 'snake');
                         newPos.style.background = 'blue';
                     }
                     break;
                 case 'd':
                     newPos = document.querySelector('[px="' + pX + '"][py="' + (pY + 1) + '"]');
                     if (endgame(newPos) == true) {
+                        if (newPos.getAttribute("tipo") == 'food') {
+                            randomFood();
+                        }
                         removeSnake();
-                        newPos.setAttribute('class', 'snake');
+                        newPos.setAttribute('tipo', 'snake');
                         newPos.style.background = 'blue';
                     }
                     break;
             }
 
-        }, 1000);
+        }, 200);
     }
 
 </script>
