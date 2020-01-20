@@ -13,11 +13,15 @@
 <body class="bg-dark">
    <div class="container-fluid">
       <div class="row bg-secondary">
-         <div class="col-sm-1">
+         <div class="col-sm-2">
             <button onclick="core()" id="btnPlay" class="btn btn-dark w-100">Jogar</button>
          </div>
+         <div class="col-sm-3">
+            <span>Tamanho da area de jogo</span>
+            <input type="text" class="form-control form-control-sm" value="30" id="qtdQuadros">
+         </div>
          <div class="col-sm">
-            <span id="pontos">0</button>
+            <span id="pontos">0</span>
          </div>
       </div>
       <div class="row">
@@ -25,19 +29,28 @@
 
          </div>
       </div>
+      <div class="row">
+         <div class="col-sm-3 text-center">
+            <button class="btn btn-primary" onclick="direction = 'u'">UP</button><br>
+            <button class="btn btn-primary" onclick="direction = 'l'">LEFT</button>
+            <button class="btn btn-primary" onclick="direction = 'r'">RIGHT</button><br>
+            <button class="btn btn-primary" onclick="direction = 'd'">DOWN</button>
+         </div>
+      </div>
    </div>
 
 </body>
 <script>
-   createtableGame();
    window.addEventListener("keydown", directionSnake, false);
 
    direction = 'r';
-   qtdQuadro = 10;
+   qtdQuadro = 0;
    pontos = 0;
    sa = [[1, 0], [0, 0]];
 
-   function createtableGame(qtdQuadro = 10) {
+   function createtableGame() {
+
+      qtdQuadro = document.getElementById('qtdQuadros').value;
       let divGame = document.getElementById('divGame');
 
       let table = document.createElement('table');
@@ -125,6 +138,7 @@
          btn.removeAttribute('disabled');
          clearInterval(loopcore);
          alert('voce perdeu');
+         window.location.reload();
          return false;
       } else {
          return true;
@@ -134,6 +148,7 @@
    function core() {
       let btn = document.getElementById('btnPlay');
       btn.setAttribute('disabled', 'disabled');
+      createtableGame();
       startGame(true);
       let gera = false;
       loopcore = setInterval(() => {
@@ -177,6 +192,7 @@
                btn.removeAttribute('disabled');
                clearInterval(loopcore);
                alert('voce perdeu');
+               window.location.reload();
             }else{
                gera = false;
             }
@@ -188,9 +204,10 @@
             for (let i = sa.length -1; i > 0; i--) {
                sa[i][0] = sa[i-1][0];
                sa[i][1] = sa[i-1][1];
-
-               sa[0][0] = pX;
-               sa[0][1] = pY;
+               if (i == 1) {
+                  sa[0][0] = pX;
+                  sa[0][1] = pY;
+               }
             }
          }
 
