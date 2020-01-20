@@ -50,6 +50,7 @@
    direction = 'r';
    qtdQuadro = 0;
    pontos = 0;
+   timeLoop = 200;
    sa = [[1, 0], [0, 0]];
 
    function createtableGame() {
@@ -141,12 +142,14 @@
       }
    }
 
-   function core() {
-      let btn = document.getElementById('btnPlay');
-      btn.setAttribute('disabled', 'disabled');
-      createtableGame();
-      startGame(true);
-      let gera = false;
+   function core(interval = 'n') {
+      if (interval == 'n') {
+         let btn = document.getElementById('btnPlay');
+         btn.setAttribute('disabled', 'disabled');
+         createtableGame();
+         startGame(true);
+         let gera = false;
+      }
       loopcore = setInterval(() => {
          let pX = 0;
          let pY = 0;
@@ -182,7 +185,10 @@
 
                gera = true;
                pontos++;
-               document.getElementById("pontos").innerHTML = pontos;
+               clearInterval(loopcore);
+               timeLoop = timeLoop - 5;
+               core('s')
+               document.getElementById("pontos").innerHTML = pontos + ' '+ timeLoop;
             } else if (snake.getAttribute("tipo") == 'snake') {
                let btn = document.getElementById('btnPlay');
                btn.removeAttribute('disabled');
@@ -210,7 +216,7 @@
 
          startGame(gera);
 
-      }, 200);
+      }, timeLoop);
    }
 
 </script>
