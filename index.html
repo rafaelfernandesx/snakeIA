@@ -84,20 +84,24 @@
    function directionSnake(e) {
       switch (e.keyCode) {
          case 37:
-            //left
-            direction = 'l'
+            if (direction != 'r') {
+               direction = 'l'
+            }
             break;
          case 38:
-            //up
-            direction = 'u';
+            if (direction != 'd') {
+               direction = 'u';
+            }
             break;
          case 39:
-            //right
-            direction = 'r';
+            if (direction != 'l') {
+               direction = 'r';
+            }
             break;
          case 40:
-            //down
-            direction = 'd';
+            if (direction != 'u') {
+               direction = 'd';
+            }
             break;
       }
    }
