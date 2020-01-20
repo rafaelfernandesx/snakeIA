@@ -2,176 +2,195 @@
 <html lang="pt-BR">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="index.css">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
-    <title>IA</title>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <meta http-equiv="X-UA-Compatible" content="ie=edge">
+   <link rel="stylesheet" href="index.css">
+   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+   <title>IA</title>
 </head>
 
 <body class="bg-dark">
-    <div class="container-fluid">
-        <div class="row bg-secondary">
-            <div class="col-sm-1">
-                <button onclick="core()" class="btn btn-dark w-100">Jogar</button>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-sm" id="divGame">
+   <div class="container-fluid">
+      <div class="row bg-secondary">
+         <div class="col-sm-1">
+            <button onclick="core()" id="btnPlay" class="btn btn-dark w-100">Jogar</button>
+         </div>
+      </div>
+      <div class="row">
+         <div class="col-sm" id="divGame">
 
-            </div>
-        </div>
-    </div>
+         </div>
+      </div>
+   </div>
 
 </body>
 <script>
-    createtableGame();
+   createtableGame();
+   window.addEventListener("keydown", directionSnake, false);
 
-    direction = 'r';
-    arraySnake = [0.0];
-    qtdQuadro = 20;
+   direction = 'r';
+   qtdQuadro = 20;
+   pontos = 0;
+   sa = [[1, 0], [0, 0]];
 
-    function createtableGame(qtdQuadro = 20) {
-        let divGame = document.getElementById('divGame');
+   function createtableGame(qtdQuadro = 20) {
+      let divGame = document.getElementById('divGame');
 
-        let table = document.createElement('table');
-        // table.setAttribute('cellpadding', '5px');
-        table.setAttribute('id', 'tableGame');
-        table.setAttribute('cellspacing', '0px');
-        table.setAttribute('border', '1px');
+      let table = document.createElement('table');
+      table.setAttribute('id', 'tableGame');
+      table.setAttribute('cellspacing', '0px');
+      table.setAttribute('border', '1px');
 
-        for (let y = 0; y < qtdQuadro; y++) {
-            let tr = document.createElement('tr');
-            for (let x = 0; x < qtdQuadro; x++) {
-                let td = document.createElement('td');
-                // td.style.background = 'rgb('+ Math.floor(Math.random() * 255) +', '+ Math.floor(Math.random() * 255) +', '+ Math.floor(Math.random() * 255) +')';
-                td.style.padding = '7px';
-                td.setAttribute('px', x);
-                td.setAttribute('py', y);
-                td.setAttribute('tipo', 'floor');
-                tr.appendChild(td);
-            }
-            table.appendChild(tr);
-        }
-        divGame.appendChild(table);
-    }
+      for (let y = 0; y < qtdQuadro; y++) {
+         let tr = document.createElement('tr');
+         for (let x = 0; x < qtdQuadro; x++) {
+            let td = document.createElement('td');
+            td.style.padding = '7px';
+            td.setAttribute('px', x);
+            td.setAttribute('py', y);
+            td.setAttribute('tipo', 'floor');
+            tr.appendChild(td);
+         }
+         table.appendChild(tr);
+      }
+      divGame.appendChild(table);
+   }
 
-    function startGame() {
-        tdP = document.querySelector('[px="0"][py="0"]');
-        tdP.style.background = 'blue';
-        tdP.setAttribute('tipo', 'snake');
-        randomFood();
+   function startGame(gera = false) {
+      let tds = document.querySelectorAll('td');
 
-        window.addEventListener("keydown", directionSnake, false);
-    }
+      for (let i = 0; i < tds.length; i++) {
+         if (tds[i].getAttribute('tipo') != 'food') {
+            tds[i].style.background = '#343a40';
+            tds[i].setAttribute('tipo', 'floor');
+         }
+      }
 
-    function directionSnake(e) {
-        switch (e.keyCode) {
-            case 37:
-                //left
-                direction = 'l'
-                break;
-            case 38:
-                //up
-                direction = 'u';
-                break;
-            case 39:
-                //right
-                direction = 'r';
-                break;
-            case 40:
-                //down
-                direction = 'd';
-                break;
-        }
-    }
+      for (let i = 0; i < sa.length; i++) {
+         let snake = document.querySelector('[px="'+sa[i][0]+'"][py="'+sa[i][1]+'"]');
+         snake.style.background = 'blue';
+         snake.setAttribute('tipo', 'snake');
+      }
 
-    function randomFood(){
-        let pBug = [Math.floor(Math.random() * qtdQuadro), Math.floor(Math.random() * qtdQuadro)];
+      if (gera == true) {
+         randomFood();//gera a "comida em algum lugar da tabela"
+      }
+   }
 
-        let bug = document.querySelector('[px="'+ pBug[0] +'"][py="'+ pBug[1] +'"]');
-        bug.style.background = 'red';
-        bug.setAttribute('tipo', 'food');
-    }
+   function directionSnake(e) {
+      switch (e.keyCode) {
+         case 37:
+            //left
+            direction = 'l'
+            break;
+         case 38:
+            //up
+            direction = 'u';
+            break;
+         case 39:
+            //right
+            direction = 'r';
+            break;
+         case 40:
+            //down
+            direction = 'd';
+            break;
+      }
+   }
 
-    function removeSnake() {
-        let campos = document.querySelectorAll('td');
-        for (let i = 0; i < campos.length; ++i) {
-            if (campos[i].getAttribute('tipo') != 'food') {
-                campos[i].style.background = '#343a40';
-                campos[i].setAttribute('tipo','floor');
-            }
-        }
-    }
-    function endgame(snake){
-        if (snake == null) {
-            clearInterval(loopcore);
-            alert('voce perdeu');
-            return false;
-        }else{
-            return true;
-        }
-    }
+   function randomFood() {
+      let pBug = [Math.floor(Math.random() * qtdQuadro), Math.floor(Math.random() * qtdQuadro)];
 
-    function core(){
-        removeSnake();
-        startGame();
-        direction = 'r';
-        loopcore = setInterval(() => {
-            let snake = document.querySelector('[tipo="snake"]');
-            let pX = parseFloat(snake.getAttribute('px'));
-            let pY = parseFloat(snake.getAttribute('py'));
+      let bug = document.querySelector('[px="' + pBug[0] + '"][py="' + pBug[1] + '"]');
+      bug.style.background = 'red';
+      bug.setAttribute('tipo', 'food');
+   }
 
-            switch (direction) {
-                case 'l':
-                    newPos = document.querySelector('[px="'+(pX-1)+'"][py="'+pY+'"]');
-                    if (endgame(newPos) == true){
-                        if (newPos.getAttribute("tipo") == 'food') {
-                            randomFood();
-                        }
-                        removeSnake();
-                        newPos.setAttribute('tipo', 'snake');
-                        newPos.style.background = 'blue';
-                    }
-                    break;
-                case 'u':
-                    newPos = document.querySelector('[px="' + pX + '"][py="' + (pY - 1) + '"]');
-                    if (endgame(newPos) == true) {
-                        if (newPos.getAttribute("tipo") == 'food') {
-                            randomFood();
-                        }
-                        removeSnake();
-                        newPos.setAttribute('tipo', 'snake');
-                        newPos.style.background = 'blue';
-                    }
-                    break;
-                case 'r':
-                    newPos = document.querySelector('[px="' + (pX + 1) + '"][py="' + pY + '"]');
-                    if (endgame(newPos) == true) {
-                        if (newPos.getAttribute("tipo") == 'food') {
-                            randomFood();
-                        }
-                        removeSnake();
-                        newPos.setAttribute('tipo', 'snake');
-                        newPos.style.background = 'blue';
-                    }
-                    break;
-                case 'd':
-                    newPos = document.querySelector('[px="' + pX + '"][py="' + (pY + 1) + '"]');
-                    if (endgame(newPos) == true) {
-                        if (newPos.getAttribute("tipo") == 'food') {
-                            randomFood();
-                        }
-                        removeSnake();
-                        newPos.setAttribute('tipo', 'snake');
-                        newPos.style.background = 'blue';
-                    }
-                    break;
+   function endgame(snake) {
+      if (snake == null) {
+         let btn = document.getElementById('btnPlay');
+         btn.removeAttribute('disabled');
+         clearInterval(loopcore);
+         alert('voce perdeu');
+         return false;
+      } else {
+         return true;
+      }
+   }
+
+   function core() {
+      let btn = document.getElementById('btnPlay');
+      btn.setAttribute('disabled', 'disabled');
+      startGame(true);
+      let gera = false;
+      loopcore = setInterval(() => {
+         let pX = 0;
+         let pY = 0;
+         let snake = '';
+         switch (direction) {
+            case 'l':
+               pX = parseInt(sa[0][0] -1);
+               pY = parseInt(sa[0][1]);
+               snake = document.querySelector('[px="' + pX + '"][py="' + pY + '"]');
+               break;
+            case 'u':
+               pX = parseInt(sa[0][0]);
+               pY = parseInt(sa[0][1] - 1);
+               snake = document.querySelector('[px="' + pX + '"][py="' + pY + '"]');
+               break;
+            case 'r':
+               pX = parseInt(sa[0][0] + 1);
+               pY = parseInt(sa[0][1]);
+               snake = document.querySelector('[px="' + pX + '"][py="' + pY + '"]');
+               break;
+            case 'd':
+               pX = parseInt(sa[0][0]);
+               pY = parseInt(sa[0][1]) + 1;
+               snake = document.querySelector('[px="' + pX + '"][py="' + pY + '"]');
+               break;
+         }
+
+         if (endgame(snake) == true) {
+            if (snake.getAttribute("tipo") == 'food') {
+
+               console.log(sa.toString())
+               snake.setAttribute('tipo', 'snake');
+               snake.style.background = 'blue';
+               sa.unshift([pX, pY]);
+
+               gera = true;
+               pontos++;
+            } else {
+               gera = false;
             }
 
-        }, 200);
-    }
+         }
+         
+  
+         // if (gera == false) {//verifica se comeu
+         //    for (let i = 0; i < sa.length; i++) {
+         //       console.log('0-', sa.toString())
+         //       if (i == 1 ){
+         //          sa[i][0] = sa[i-1][0];
+         //          sa[i][1] = sa[i-1][1];
+         //          sa[0][0] = pX;
+         //          sa[0][1] = pY;
+         //          console.log('1-',sa.toString())
+         //       }else if( i == sa.length-1 ){
+         //          sa[0][0] = pX;
+         //          sa[0][1] = pY;
+         //          console.log('2-', sa.toString())
+         //       }
+         //    }
+         //    // clearInterval(loopcore);
+         // }
+         
+
+         startGame(gera);
+
+      }, 500);
+   }
 
 </script>
 
