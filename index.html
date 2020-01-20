@@ -31,10 +31,10 @@
       </div>
       <div class="row">
          <div class="col-sm-3 text-center">
-            <button class="btn btn-primary" onclick="direction = 'u'">UP</button><br>
-            <button class="btn btn-primary" onclick="direction = 'l'">LEFT</button>
-            <button class="btn btn-primary" onclick="direction = 'r'">RIGHT</button><br>
-            <button class="btn btn-primary" onclick="direction = 'd'">DOWN</button>
+            <button class="btn btn-primary btn-lg" onclick="direction = 'u'">UP</button><br>
+            <button class="btn btn-primary btn-lg" onclick="direction = 'l'">LEFT</button>
+            <button class="btn btn-primary btn-lg" onclick="direction = 'r'">RIGHT</button><br>
+            <button class="btn btn-primary btn-lg" onclick="direction = 'd'">DOWN</button>
          </div>
       </div>
    </div>
@@ -62,7 +62,7 @@
          let tr = document.createElement('tr');
          for (let x = 0; x < qtdQuadro; x++) {
             let td = document.createElement('td');
-            td.style.padding = '7px';
+            td.style.padding = '5px';
             td.setAttribute('px', x);
             td.setAttribute('py', y);
             td.setAttribute('tipo', 'floor');
@@ -85,7 +85,7 @@
 
       for (let i = 0; i < sa.length; i++) {
          let snake = document.querySelector('[px="'+sa[i][0]+'"][py="'+sa[i][1]+'"]');
-         snake.style.background = 'blue';
+         snake.style.background = '#007bff';
          snake.setAttribute('tipo', 'snake');
       }
 
@@ -125,7 +125,7 @@
       let bug = document.querySelector('[px="' + pBug[0] + '"][py="' + pBug[1] + '"]');
 
       if (bug.getAttribute(['tipo']) != 'snake') {
-         bug.style.background = 'red';
+         bug.style.background = '#28a745';
          bug.setAttribute('tipo', 'food');
       }else{
          randomFood();
@@ -181,7 +181,7 @@
          if (endgame(snake) == true) {
             if (snake.getAttribute("tipo") == 'food') {
                snake.setAttribute('tipo', 'snake');
-               snake.style.background = 'blue';
+               snake.style.background = '#007bff';
                sa.unshift([pX, pY]);
 
                gera = true;
