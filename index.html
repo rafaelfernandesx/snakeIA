@@ -186,9 +186,9 @@
                gera = true;
                pontos++;
                clearInterval(loopcore);
-               timeLoop = timeLoop - 5;
+               timeLoop = timeLoop - 2;
                core('s')
-               document.getElementById("pontos").innerHTML = pontos + ' '+ timeLoop;
+               document.getElementById("pontos").innerHTML = pontos;
             } else if (snake.getAttribute("tipo") == 'snake') {
                let btn = document.getElementById('btnPlay');
                btn.removeAttribute('disabled');
