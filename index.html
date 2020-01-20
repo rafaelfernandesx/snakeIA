@@ -16,6 +16,9 @@
          <div class="col-sm-1">
             <button onclick="core()" id="btnPlay" class="btn btn-dark w-100">Jogar</button>
          </div>
+         <div class="col-sm">
+            <span id="pontos">0</button>
+         </div>
       </div>
       <div class="row">
          <div class="col-sm" id="divGame">
@@ -30,11 +33,11 @@
    window.addEventListener("keydown", directionSnake, false);
 
    direction = 'r';
-   qtdQuadro = 20;
+   qtdQuadro = 10;
    pontos = 0;
    sa = [[1, 0], [0, 0]];
 
-   function createtableGame(qtdQuadro = 20) {
+   function createtableGame(qtdQuadro = 10) {
       let divGame = document.getElementById('divGame');
 
       let table = document.createElement('table');
@@ -103,8 +106,13 @@
       let pBug = [Math.floor(Math.random() * qtdQuadro), Math.floor(Math.random() * qtdQuadro)];
 
       let bug = document.querySelector('[px="' + pBug[0] + '"][py="' + pBug[1] + '"]');
-      bug.style.background = 'red';
-      bug.setAttribute('tipo', 'food');
+
+      if (bug.getAttribute(['tipo']) != 'snake') {
+         bug.style.background = 'red';
+         bug.setAttribute('tipo', 'food');
+      }else{
+         randomFood();
+      }
    }
 
    function endgame(snake) {
@@ -153,15 +161,19 @@
 
          if (endgame(snake) == true) {
             if (snake.getAttribute("tipo") == 'food') {
-
-               console.log(sa.toString())
                snake.setAttribute('tipo', 'snake');
                snake.style.background = 'blue';
                sa.unshift([pX, pY]);
 
                gera = true;
                pontos++;
-            } else {
+               document.getElementById("pontos").innerHTML = pontos;
+            } else if (snake.getAttribute("tipo") == 'snake') {
+               let btn = document.getElementById('btnPlay');
+               btn.removeAttribute('disabled');
+               clearInterval(loopcore);
+               alert('voce perdeu');
+            }else{
                gera = false;
             }
 
