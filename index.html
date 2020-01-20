@@ -31,10 +31,10 @@
       </div>
       <div class="row">
          <div class="col-sm-3 text-center">
-            <button class="btn-primary btn-lg" style="width: 100px !important; height: 50px !important;" onclick="direction = 'u'">UP</button><br>
-            <button class="btn-primary btn-lg" style="width: 100px !important; height: 50px !important;" onclick="direction = 'l'">LEFT</button>===
-            <button class="btn-primary btn-lg" style="width: 100px !important; height: 50px !important;" onclick="direction = 'r'">RIGHT</button><br>
-            <button class="btn-primary btn-lg" style="width: 100px !important; height: 50px !important;" onclick="direction = 'd'">DOWN</button>
+            <button class="btn-primary btn-lg" style="width: 100px !important; height: 50px !important;" onclick="if (direction != 'd') {direction = 'u';}">UP</button><br>
+            <button class="btn-primary btn-lg" style="width: 100px !important; height: 50px !important;" onclick="if (direction != 'r') {direction = 'l'}">LEFT</button>===
+            <button class="btn-primary btn-lg" style="width: 100px !important; height: 50px !important;" onclick="if (direction != 'l') {direction = 'r';}">RIGHT</button><br>
+            <button class="btn-primary btn-lg" style="width: 100px !important; height: 50px !important;" onclick="if (direction != 'u') {direction = 'd';}">DOWN</button>
          </div>
       </div>
    </div>
@@ -97,24 +97,16 @@
    function directionSnake(e) {
       switch (e.keyCode) {
          case 37:
-            if (direction != 'r') {
-               direction = 'l'
-            }
+            if (direction != 'r') {direction = 'l'}
             break;
          case 38:
-            if (direction != 'd') {
-               direction = 'u';
-            }
+            if (direction != 'd') {direction = 'u';}
             break;
          case 39:
-            if (direction != 'l') {
-               direction = 'r';
-            }
+            if (direction != 'l') {direction = 'r';}
             break;
          case 40:
-            if (direction != 'u') {
-               direction = 'd';
-            }
+            if (direction != 'u') {direction = 'd';}
             break;
       }
    }
