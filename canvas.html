@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <title>IA</title>
+</head>
+
+<body class="bg-dark">
+    <div class="container-fluid">
+        <div class="row bg-secondary">
+            <div class="col-sm-2">
+                <button onclick="core()" id="btnPlay" class="btn btn-dark w-100">Jogar</button>
+            </div>
+            <div class="col-sm-3">
+                <span>Tamanho da area de jogo</span>
+                <input type="text" class="form-control form-control-sm" value="30" id="qtdQuadros">
+            </div>
+            <div class="col-sm">
+                <span style="font-size: 20px;">Pontos: <span style="font-size: 20px;" id="pontos">0</span></span>
+            </div>
+        </div>
+        <div class="row">
+            <div style="width: 100%; height: 60vh;" id="divCanvas">
+                <canvas id="canvasGame" width="500" height="300" style="border:1px solid red;"></canvas>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-4 p-0">
+                <button class="btn-primary btn-lg" style="width: 100% !important; height: 200px !important;"
+                    onclick="if (direction != 'r') {direction = 'l'}">LEFT</button>
+            </div>
+            <div class="col-4 p-0">
+                <button class="btn-primary btn-lg" style="width: 100% !important; height: 100px !important;"
+                    onclick="if (direction != 'd') {direction = 'u';}">UP</button><br>
+                <button class="btn-primary btn-lg" style="width: 100% !important; height: 100px !important;"
+                    onclick="if (direction != 'u') {direction = 'd';}">DOWN</button>
+            </div>
+            <div class="col-4 p-0">
+                <button class="btn-primary btn-lg" style="width: 100% !important; height: 200px !important;"
+                    onclick="if (direction != 'l') {direction = 'r';}">RIGHT</button><br>
+            </div>
+        </div>
+    </div>
+
+</body>
+<script>
+    var canvas = document.getElementById("canvasGame");
+    createArena()
+    function createArena(){
+        var ctx = canvas.getContext("2d");
+        ctx.moveTo(0, 0);
+        ctx.lineTo(200, 100);
+        ctx.stroke();
+    }
+
+</script>
+
+</html>
