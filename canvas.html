@@ -1,62 +1,157 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html>
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
-    <title>IA</title>
+    <meta charset="utf-8">
+    <title>Exemplo Gravidade</title>
+    <style type="text/css">
+        body {
+            background-color: #3498db;
+        }
+
+        h1 {
+            color: #ecf0f1;
+            font-family: verdana;
+            font-weight: bold;
+            font-size: 48px;
+        }
+
+        /*formatação do canvas e centralização*/
+        canvas {
+            position: absolute;
+            top: 200px;
+            bottom: 0px;
+            left: 0px;
+            right: 0px;
+            margin: auto;
+            border: 10px solid #f1c40f;
+            border-radius: 40px
+        }
+    </style>
+
+
 </head>
 
-<body class="bg-dark">
-    <div class="container-fluid">
-        <div class="row bg-secondary">
-            <div class="col-sm-2">
-                <button onclick="core()" id="btnPlay" class="btn btn-dark w-100">Jogar</button>
-            </div>
-            <div class="col-sm-3">
-                <span>Tamanho da area de jogo</span>
-                <input type="text" class="form-control form-control-sm" value="30" id="qtdQuadros">
-            </div>
-            <div class="col-sm">
-                <span style="font-size: 20px;">Pontos: <span style="font-size: 20px;" id="pontos">0</span></span>
-            </div>
-        </div>
-        <div class="row">
-            <div style="width: 100%; height: 60vh;" id="divCanvas">
-                <canvas id="canvasGame" width="500" height="300" style="border:1px solid red;"></canvas>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-4 p-0">
-                <button class="btn-primary btn-lg" style="width: 100% !important; height: 200px !important;"
-                    onclick="if (direction != 'r') {direction = 'l'}">LEFT</button>
-            </div>
-            <div class="col-4 p-0">
-                <button class="btn-primary btn-lg" style="width: 100% !important; height: 100px !important;"
-                    onclick="if (direction != 'd') {direction = 'u';}">UP</button><br>
-                <button class="btn-primary btn-lg" style="width: 100% !important; height: 100px !important;"
-                    onclick="if (direction != 'u') {direction = 'd';}">DOWN</button>
-            </div>
-            <div class="col-4 p-0">
-                <button class="btn-primary btn-lg" style="width: 100% !important; height: 200px !important;"
-                    onclick="if (direction != 'l') {direction = 'r';}">RIGHT</button><br>
-            </div>
-        </div>
-    </div>
+<body>
+    <h1>Exemplo de Gravidade!</h1>
+    <script type="text/javascript">
+        //aqui temos as variáveis globais do game
+        var canvas, ctx, Altura, Largura, frame = 0;
 
+        // objetos rec do game
+        var chao = {
+            y: 450,
+            altura: 150,
+            cor: "#16a085",
+
+            desenhar: function () {
+                ctx.fillStyle = this.cor;
+                ctx.fillRect(0, this.y, Largura, this.altura);
+            }
+
+        },
+
+            bloco = {
+                x: 250,
+                y: 0,
+                altura: 40,
+                largura: 40,
+                cor: "#9b59b6",
+                gravidade: 1.5,
+                velocidade: 0,
+                forcaDoPulo: 25,
+
+                pula: function () {
+                    this.velocidade = - this.forcaDoPulo;//-25
+                },
+
+                atualizar: function () {
+                    this.velocidade += this.gravidade; //valor atual+3
+                    this.y += this.velocidade; //valor atual+3
+
+                    //colisão com o chão
+                    if (this.y > chao.y - this.altura) {
+                        this.y = chao.y - this.altura;//410
+                    }
+
+                },
+
+                desenhar: function () {
+                    ctx.fillStyle = this.cor;
+                    ctx.fillRect(this.x, this.y, this.largura, this.altura);
+                }
+            };
+
+
+
+        // conta a quantidade de cliks e faz o personagem pular
+        function clique(event) {
+            bloco.pula();
+        }
+        // função principal onde será chamada as outras funções (o construtor)
+        function principal() {
+            // pega a largura total da tela
+            Largura = window.innerHeight;
+            // pega a altura total da tela
+            Altura = window.innerWidth;
+
+            //se a largura for mair que 500px a largura é redefinida para 600 px
+            //obs, essa condição sempre será verdadeira para desktops, portanto a largura e altura sempre sera 600px
+            if (Largura >= 500) {
+                Largura = 600;
+                Altura = 600;
+            }
+
+            // criação de um novo elemento do tipo canvas, é como se eu escrevesse a tag canvas no html
+            canvas = document.createElement("canvas");
+            //define a largura do canvas
+            canvas.width = Largura;
+            //define a altura do canvas
+            canvas.height = Altura;
+
+            // pegar o contexto 2D para o canvas, isso quer dizer que tudo quer for renderizado será do contexto 2D
+            ctx = canvas.getContext("2d");
+
+            // adiciona o canvas ao nosso documento HTML
+            document.body.appendChild(canvas);
+
+            // adiciona o evento de clique, toda vez que alguém cliar na pagina será executado a função "clique" que criamos anteriormente, o evento será pasado por parametro
+            document.addEventListener("mousedown", clique);
+
+            //chama a função roda
+            roda();
+
+        }
+        //responsável por fazer a
+        function roda() {
+            //chama a função atualizar
+            atualizar();
+            //chama a função desenha
+            desenhar();
+
+            // a cada segundo a função roda sera chamada
+            window.requestAnimationFrame(roda);
+        }
+        function atualizar() {
+            //incrementa mais 1 ao nosso frame
+            frame++;
+
+            bloco.atualizar();
+        }
+        function desenhar() {
+            // define a cor do retangulo que queremos desenhar
+            ctx.fillStyle = "#50BEff";
+            // desenha um retangulo da x = 0 até o tamanho total da largura
+            //e de y =  0 até o tamanho total da altura
+            ctx.fillRect(0, 0, Largura, Altura)
+
+            chao.desenhar();
+            bloco.desenhar();
+        }
+
+        // incia o jogo
+        principal();
+    </script>
 </body>
-<script>
-    var canvas = document.getElementById("canvasGame");
-    createArena()
-    function createArena(){
-        var ctx = canvas.getContext("2d");
-        ctx.moveTo(0, 0);
-        ctx.lineTo(200, 100);
-        ctx.stroke();
-    }
-
-</script>
 
 </html>

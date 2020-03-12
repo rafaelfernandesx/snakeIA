@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Snake com canvas</title>
+    <style type="text/css">
+        body {
+            background-color: #3498db;
+        }
+
+        /*formatação do canvas e centralização*/
+        canvas {
+            position: absolute;
+            top: 10px;
+            bottom: 0px;
+            left: 10px;
+            right: 0px;
+            border: 10px solid #f1c40f;
+        }
+    </style>
+
+
+</head>
+
+<body>
+    <script type="text/javascript">
+        //aqui temos as variáveis globais do game
+        var canvas, ctx, frame = 0, pixel = 20;
+
+        var arena = {
+            x: 0,
+            y: 0,
+            w: 300,
+            h: 300
+        },
+        score = {
+            x: arena.w / 3,
+            y: 20,
+            score: 0,
+
+            desenhar: function () {
+                ctx.font = "20px Arial";
+                ctx.fillStyle = "blue";
+                ctx.fillText('SCORE: ' + this.score, this.x, this.y);
+            }
+        };
+
+        // objetos rec do game
+        var snake = {
+            x: 140,
+            y: 140,
+            h: pixel, //altura
+            w: pixel, //largura
+            cor: "#000",
+            velocidade: 0,
+            direcao: 'u',
+
+            atualizar: function () {
+                // this.velocidade += this.gravidade; //valor atual+3
+                // this.y += this.velocidade; //valor atual+3
+
+                colisaoArena(this, arena, 'arena');
+                colisao(this, fruta, 'fruta');
+
+            },
+
+            desenhar: function () {
+                ctx.fillStyle = this.cor;
+                ctx.fillRect(this.x, this.y, this.w, this.h);
+            }
+        },
+        fruta = {
+            x: 0,
+            y: 0,
+            h: pixel,
+            w: pixel,
+            cor: "#da0000",
+
+            geraPos: function(){
+                let nx = randomRange(pixel, arena.w - pixel);
+                let ny = randomRange(pixel, arena.h - pixel);
+                while (nx % arena.w != 0 || ny % arena.h != 0) {
+                    nx = randomRange(pixel, arena.w - pixel);
+                    ny = randomRange(pixel, arena.h - pixel);
+                    // this.geraPos();
+                }
+                this.x = nx;
+                this.y = ny;
+            },
+
+            desenhar: function () {
+                // this.geraPos();
+                ctx.fillStyle = this.cor;
+                ctx.fillRect(this.x, this.y, this.w, this.h);
+            }
+        };
+
+        function colisao(objeto, colisor, nameColisor) {
+            //colisão com o bottom
+
+            if (objeto.x < colisor.x + colisor.w &&
+                objeto.x + objeto.w > colisor.x &&
+                objeto.y < colisor.y + colisor.h &&
+                objeto.y + objeto.h > colisor.y) {
+                console.log('colidiu com: ' + nameColisor);
+                score.score +=1;
+                fruta.geraPos();
+            }
+        }
+
+        function colisaoArena(objeto, colisor, nameColisor) {
+
+            if (objeto.y > colisor.h - objeto.h) {
+                objeto.y = eval(nameColisor + '.h') - objeto.h;
+                console.log('colidiu bottom com: ' + nameColisor);
+            }
+            if (objeto.y < colisor.y) {
+                objeto.y = eval(nameColisor + '.y');
+                console.log('colidiu top com: '+ nameColisor);
+            }
+            if (objeto.x > colisor.w - objeto.w) {
+                objeto.x = eval(nameColisor + '.w') - objeto.w;
+                console.log('colidiu right com: ' + nameColisor);
+            }
+            if (objeto.x < colisor.x) {
+                objeto.x = eval(nameColisor + '.x');
+                console.log('colidiu left com: ' + nameColisor);
+            }
+        }
+
+        function teclas(event) {
+            switch (event.keyCode) {
+                case 37:
+                    if (snake.direcao != 'r') { snake.direcao = 'l' }
+                    snake.x -= pixel;
+                    break;
+                case 38:
+                    if (snake.direcao != 'd') { snake.direcao = 'u'; }
+                    snake.y -= pixel;
+                    break;
+                case 39:
+                    if (snake.direcao != 'l') { snake.direcao = 'r'; }
+                    snake.x += pixel;
+                    break;
+                case 40:
+                    if (snake.direcao != 'u') { snake.direcao = 'd'; }
+                    snake.y += pixel;
+                    break;
+            }
+        }
+
+        function randomRange(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+        // função principal onde será chamada as outras funções (o construtor)
+        function principal() {
+
+            // criação de um novo elemento do tipo canvas, é como se eu escrevesse a tag canvas no html
+            canvas = document.createElement("canvas");
+            //define a w do canvas
+            canvas.width = arena.w;
+            //define a h do canvas
+            canvas.height = arena.h;
+
+            // pegar o contexto 2D para o canvas, isso quer dizer que tudo quer for renderizado será do contexto 2D
+            ctx = canvas.getContext("2d");
+
+            // adiciona o canvas ao nosso documento HTML
+            document.body.appendChild(canvas);
+
+            // adiciona o evento de teclas, toda vez que alguém cliar na pagina será executado a função "teclas" que criamos anteriormente, o evento será pasado por parametro
+            document.addEventListener("keydown", teclas);
+
+            //chama a função roda
+            roda();
+
+        }
+        //responsável por fazer a
+        function roda() {
+            //chama a função atualizar
+            atualizar();
+            //chama a função desenha
+            desenhar();
+
+            // a cada segundo a função roda sera chamada
+            window.requestAnimationFrame(roda);
+        }
+        function atualizar() {
+            //incrementa mais 1 ao nosso frame
+            frame++;
+
+            snake.atualizar();
+        }
+        function desenhar() {
+            // define a cor do retangulo que queremos desenhar
+            ctx.fillStyle = "#50BEff";
+            // desenha um retangulo da x = 0 até o tamanho total da w
+            //e de y =  0 até o tamanho total da h
+            ctx.fillRect(0, 0, arena.w, arena.h)
+
+            score.desenhar();
+            snake.desenhar();
+            fruta.desenhar();
+        }
+
+        // incia o jogo
+        principal();
+    </script>
+</body>
+
+</html>
