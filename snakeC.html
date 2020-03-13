@@ -6,7 +6,7 @@
     <title>Snake com canvas</title>
     <style type="text/css">
         body {
-            background-color: #3498db;
+            background-color: #111;
         }
 
         /*formatação do canvas e centralização*/
@@ -16,7 +16,7 @@
             bottom: 0px;
             left: 10px;
             right: 0px;
-            border: 10px solid #f1c40f;
+            border: 10px solid #0e11b9;
         }
     </style>
 
@@ -26,71 +26,78 @@
 <body>
     <script type="text/javascript">
         //aqui temos as variáveis globais do game
-        var canvas, ctx, frame = 0, pixel = 20, qtdQuadro = 14;
+        var canvas, ctx, frame = 0, pixel = 20, qtdQuadro = 10, speed = 500;
 
         var arena = {
             x: 0,
             y: 0,
             w: 314,
             h: 314,
-            q: [
-                {
-                    cor: 'gray',
-                    tipo: 'empty',
-                    x: 0,
-                    y: 0
-                }
-            ],
+            q: [],
             desenhar: function () {
-                // this.w = (14 * pixel) + 1
-                // this.h = (14 * pixel) + 1
-                ctx.font = "20px Arial";
                 for (let i = 0; i < this.q.length; i++) {
                     ctx.fillStyle = arena.q[i].cor;
-                    ctx.fillRect(arena.q[i].x, arena.q[i].y, pixel, pixel);
+                    ctx.fillRect(this.q[i].x, this.q[i].y, pixel, pixel);
                 }
             }
         },
         score = {
-            x: arena.w / 3,
-            y: 20,
+            x: 20,
+            y: 18,
             score: 0,
 
             desenhar: function () {
                 ctx.font = "20px Arial";
                 ctx.fillStyle = "blue";
-                ctx.fillText('SCORE: ' + this.score, this.x, this.y);
+                ctx.fillText('SC: ' + this.score, this.x, this.y);
             }
         };
-        arena.w = (qtdQuadro * pixel) + (qtdQuadro-1);
-        arena.h = (qtdQuadro * pixel) + (qtdQuadro-1);
-        let ii = 0, jj = 0;
-        for (let i = 0; i < qtdQuadro; i ++) {
-            for (let j = 0; j < qtdQuadro; j ++) {
-                arena.q.push({
-                    cor: 'gray',
-                    tipo: 'empty',
-                    x: pixel * j,
-                    y: pixel * i
-                });
+
+        function makeArena(qtdQuadro, sizeQuadro){
+            arena.w = (qtdQuadro * sizeQuadro) + (qtdQuadro-1);
+            arena.h = (qtdQuadro * sizeQuadro) + (qtdQuadro-1);
+            let ii = 0, jj = 0;
+            for (let i = 0; i < qtdQuadro; i ++) {
+                for (let j = 0; j < qtdQuadro; j ++) {
+                    arena.q.push({
+                        cor: 'lime',
+                        tipo: 'empty',
+                        x: (sizeQuadro * j) + jj,
+                        y: (sizeQuadro * i) +ii
+                    });
+                    jj += 1;
+                }
+                jj = 0;
+                ii += 1;
             }
         }
-        // objetos rec do game
+
         var snake = {
-            x: 147,
-            y: 147,
+            x: 0,
+            y: 0,
             h: pixel, //altura
             w: pixel, //largura
             cor: "#000",
-            velocidade: 0,
-            direcao: 'u',
+            direcao: 'r',
 
             atualizar: function () {
-                // this.velocidade += this.gravidade; //valor atual+3
-                // this.y += this.velocidade; //valor atual+3
+                switch (this.direcao) {
+                    case 'r':
+                        this.x += pixel + 1;
+                        break;
+                    case 'u':
+                        this.y -= (pixel + 1);
+                        break;
+                    case 'd':
+                        this.y += pixel + 1;
+                        break;
+                    case 'l':
+                        this.x -= (pixel + 1);
+                        break;
+                }
 
-                colisaoArena(this, arena, 'arena');
-                colisao(this, fruta, 'fruta');
+                colisaoArena(this, arena);
+                colisao(this, fruta);
 
             },
 
@@ -100,53 +107,54 @@
             }
         },
         fruta = {
-            x: 100,
-            y: 100,
+            x: 0,
+            y: 0,
             h: pixel,
             w: pixel,
             cor: "#da0000",
 
-            geraPos: function(){
-                this.x = nx;
-                this.y = ny;
-            },
-
             desenhar: function () {
-                // this.geraPos();
                 ctx.fillStyle = this.cor;
                 ctx.fillRect(this.x, this.y, this.w, this.h);
             }
         };
-
-        function colisao(objeto, colisor, nameColisor) {
-            //colisão com o bottom
+        function geraPosFruta() {
+            let pos = arena.q.length-1;
+            pos = randomRange(0, pos);
+            if (arena.q[pos].tipo != 'empty' ) {
+                geraPosFruta();
+            }else{
+                fruta.x = arena.q[pos].x;
+                fruta.y = arena.q[pos].y;
+            }
+        };
+        function colisao(objeto, colisor) {
 
             if (objeto.x < colisor.x + colisor.w &&
                 objeto.x + objeto.w > colisor.x &&
                 objeto.y < colisor.y + colisor.h &&
                 objeto.y + objeto.h > colisor.y) {
-                // console.log('colidiu com: ' + nameColisor);
-                score.score +=1;
-                fruta.geraPos();
+                score.score++;
+                geraPosFruta();
             }
         }
 
-        function colisaoArena(objeto, colisor, nameColisor) {
+        function colisaoArena(objeto, colisor) {
 
             if (objeto.y > colisor.h - objeto.h) {
-                objeto.y = eval(nameColisor + '.h') - objeto.h;
+                objeto.y = colisor.h - objeto.h;
                 // console.log('colidiu bottom com: ' + nameColisor);
             }
             if (objeto.y < colisor.y) {
-                objeto.y = eval(nameColisor + '.y');
+                objeto.y = colisor.y;
                 // console.log('colidiu top com: '+ nameColisor);
             }
             if (objeto.x > colisor.w - objeto.w) {
-                objeto.x = eval(nameColisor + '.w') - objeto.w;
+                objeto.x = colisor.w - objeto.w;
                 // console.log('colidiu right com: ' + nameColisor);
             }
             if (objeto.x < colisor.x) {
-                objeto.x = eval(nameColisor + '.x');
+                objeto.x = colisor.x;
                 // console.log('colidiu left com: ' + nameColisor);
             }
         }
@@ -154,20 +162,24 @@
         function teclas(event) {
             switch (event.keyCode) {
                 case 37:
-                    if (snake.direcao != 'r') { snake.direcao = 'l' }
-                    snake.x -= pixel+1;
+                    if (snake.direcao != 'r') {
+                        snake.direcao = 'l'
+                    }
                     break;
                 case 38:
-                    if (snake.direcao != 'd') { snake.direcao = 'u'; }
-                    snake.y -= pixel + 1;
+                    if (snake.direcao != 'd') {
+                        snake.direcao = 'u';
+                    }
                     break;
                 case 39:
-                    if (snake.direcao != 'l') { snake.direcao = 'r'; }
-                    snake.x += pixel + 1;
+                    if (snake.direcao != 'l') {
+                        snake.direcao = 'r';
+                    }
                     break;
                 case 40:
-                    if (snake.direcao != 'u') { snake.direcao = 'd'; }
-                    snake.y += pixel + 1;
+                    if (snake.direcao != 'u') {
+                        snake.direcao = 'd';
+                    }
                     break;
             }
         }
@@ -178,30 +190,28 @@
 
         // função principal onde será chamada as outras funções (o construtor)
         function principal() {
+            //cria a arena
+            makeArena(qtdQuadro, pixel);
+            geraPosFruta();
 
             canvas = document.createElement("canvas");
             canvas.width = arena.w;
             canvas.height = arena.h;
-            // pegar o contexto 2D para o canvas, isso quer dizer que tudo quer for renderizado será do contexto 2D
             ctx = canvas.getContext("2d");
-            // adiciona o canvas ao nosso documento HTML
             document.body.appendChild(canvas);
-            // adiciona o evento de teclas, toda vez que alguém cliar na pagina será executado a função "teclas" que criamos anteriormente, o evento será pasado por parametro
             document.addEventListener("keydown", teclas);
 
-            //chama a função roda
             roda();
         }
 
-        //responsável por fazer a
         function roda() {
-            //chama a função atualizar
             atualizar();
-            //chama a função desenha
             desenhar();
-
             // a cada segundo a função roda sera chamada
-            window.requestAnimationFrame(roda);
+            setTimeout(() => {
+                roda()
+            }, speed);
+            // window.requestAnimationFrame(roda);
         }
         function atualizar() {
             //incrementa mais 1 ao nosso frame
@@ -210,11 +220,8 @@
             snake.atualizar();
         }
         function desenhar() {
-            // define a cor do retangulo que queremos desenhar
-            ctx.fillStyle = "#50BEff";
-            // desenha um retangulo da x = 0 até o tamanho total da w
-            //e de y =  0 até o tamanho total da h
-            ctx.fillRect(0, 0, arena.w, arena.h)
+            ctx.fillStyle = "#50BEff";//cor do fundo da arena
+            ctx.fillRect(0, 0, arena.w, arena.h)//desenha a arena
 
             arena.desenhar();
             score.desenhar();
